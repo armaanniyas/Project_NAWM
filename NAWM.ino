@@ -1,6 +1,9 @@
 #include <Adafruit_CircuitPlayground.h>
 #include <PulseSensorPlayground.h>
 
+#include <fstream>
+
+
 PulseSensorPlayground pulseSensor;
 
 class user{
@@ -11,9 +14,12 @@ private:
   int age;
   String gender;
   bool calibrated;
+  ofstream dataFile("data.csv");
+  dataFile <<"Time,BPM\n";
 
   //BPM varaibles
   int RHR;
+  
 
   //Light variables
 
@@ -79,6 +85,7 @@ void loop() {
   if (bpm > 0) {
     Serial.print("BPM: ");
     Serial.println(bpm);
+    dataFile >> bpm;
   } else {
     Serial.println("No beat detected");
   }
