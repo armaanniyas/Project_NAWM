@@ -4,12 +4,22 @@
 PulseSensorPlayground pulseSensor;
 
 class user{
-  private:
+private:
+
+  //User variables
   String name;
   int age;
   String gender;
   bool calibrated;
+
+  //BPM varaibles
   int RHR;
+
+  //Light variables
+
+
+  //Sleep variables
+
   public:
     user(String n, int a, String g){
       name = n;
