@@ -3,7 +3,6 @@
 #define LATENCY 5
 
 PulseSensorPlayground pulseSensor;
-
 // Intialise variables
 
 bool firstTime = true;
@@ -20,6 +19,7 @@ int belowRHR = 0;
 int interval = 0;
 int prevInterval = 0;
 int sum = 0;
+int soundCount = 0, lightCount = 0, lowTempCount = 0, highTempCount = 0;
 
 class user{
   private:
@@ -118,11 +118,27 @@ bool movement(double x, double y, double z) {
   }
 }
 
+bool soundCheck(){
+  CircuitPlayground.mic.soundPressureLevel(10) > 60.0 ? true : false;
+}
+
+bool lightCheck(){
+  CircuitPlayground.lightSensor() > 10.0 ? true : false;
+}
+
+bool lowTempCheck(){
+  CircuitPlayground.temperature() < 18.0 ? true : false;
+}
+
+bool highTempCheck(){
+  CircuitPlayground.temperature() > 25.0 ? true : false;
+}
+
 double calculateHRV(int sum, int count){
   return sqrt(sum / (count-1));
     }
 
-void sleepMetrics(int light, int deep, int REM, double HRV){
+void sleepMetrics(int light, int deep, int REM, double HRV, int soundCount, int lightCount, int lowTempCount, int highTempCount){
   double sleepDuration = (light + deep + REM) / (60*60);
   Serial.print("Good morning ");
   Serial.print(testUser.getName());
@@ -149,26 +165,23 @@ void sleepMetrics(int light, int deep, int REM, double HRV){
   Serial.print("Heart rate variability (HRV): ");
   Serial.print(HRV);
   Serial.println("----------------------");
-  Serial.println("Analysis: ");
+  Serial.println("Sleep Analysis: ");
   if((double)REM/(light + deep + REM) < 0.2){
-    Serial.println("Your REM sleep is low. We encourage you to avoid caffiene and meals before bed and try a 
-      relaxing bedtime routine to help you wind down and maximise restorative sleep.");
+    Serial.println("Your REM sleep is low. We encourage you to avoid caffiene and meals before bed and try a relaxing bedtime routine to help you wind down and maximise restorative sleep.");
   }else{
     Serial.println("You hit optimal REM targets! You should feel physically and mentally ready and pumped for the day ahead.");
   }
   if(HRV >= 60){
     Serial.println("Your HRV is above the baseline. Great work. This indicates better fitness and overall health.");
   }else if(HRV < 35){
-    Serial.println("Your HRV is low. This may be a sign of overtraining, lack of sleep, dehydration or stress. 
-      Ensure you are getting good sleep, drinking fluids and avoid burnouts. If you need support, speak to a friend.");
+    Serial.println("Your HRV is low. This may be a sign of overtraining, lack of sleep, dehydration or stress. Ensure you are getting good sleep, drinking fluids and avoid burnouts. If you need support, speak to a friend.");
   }
   double standardizedHRV = (HRV - 15) / (100 - 15) *100;
   double standardizedLight = 100 - abs(light*100 - 50);
   double standardizedDeep = 100 - 2*(abs(deep*100 - 25));
   double standardizedREM = 100 - 2*(abs(REM*100 - 25));
   double standardizedDuration = 100 - 15 *(abs(sleepDuration - testUser.getSleepTarget()));
-  double sleepScore = 0.3*standardizedHRV + 0.2*standardizedLight + 
-    0.2*standardizedDeep + 0.2*standardizedREM + 0.1*standardizedDuration;
+  double sleepScore = 0.3*standardizedHRV + 0.2*standardizedLight + 0.2*standardizedDeep + 0.2*standardizedREM + 0.1*standardizedDuration;
 
   Serial.print("Sleep Performance Score: ");
   Serial.println(sleepScore);
@@ -179,6 +192,28 @@ void sleepMetrics(int light, int deep, int REM, double HRV){
     Serial.println("You are acing your sleep. Keep it up.");
   }else{
     Serial.println("You are getting sufficient sleep. Try to hit 100% of your sleep needs for peak performance.");
+  }
+
+//Turn on the light according to the sleepscore
+  int lightNum = sleepScore/10;
+
+  for(int i = 0; i < lightNum;i++){
+    CircuitPlayground.setPixelColor(i,0,255,0);
+  }
+
+  Serial.println("----------------");
+  Serial.println("Environmental analysis:");
+  if(soundCount > 10){
+    Serial.println("Your sleeping environment is too loud!");
+  }
+  if(lightCount > 10){
+    Serial.println("Your sleeping environment is too bright!");
+  }
+  if(lowTempCount > 10){
+    Serial.println("Your sleeping environment is too cold!");
+  }
+  if(highTempCount > 10){
+    Serial.println("Your sleeping environment is too hot!");
   }
 }
 
@@ -210,6 +245,10 @@ void loop() {
 
   if ((bpm > 0) && (bpm < 200)) {
     if(isAsleep){
+      if(soundCheck) soundCount++;
+      if(lightCheck) lightCount++;
+      if(lowTempCheck) lowTempCount++;
+      if(highTempCheck) highTempCount++;
       if (pulseSensor.sawStartOfBeat()) {
         prevInterval = interval;
         interval = pulseSensor.getInterBeatIntervalMs();
@@ -233,7 +272,7 @@ void loop() {
         double HRV = calculateHRV(sum, lightSleepCount + deepSleepCount + REMSleepCount);
         aboveRHR = 0;
 
-        sleepMetrics(lightSleepCount, deepSleepCount, REMSleepCount, HRV);
+        sleepMetrics(lightSleepCount, deepSleepCount, REMSleepCount, HRV, soundCount, lightCount, lowTempCount, highTempCount);
       }
     }else{
       if (bpm < testUser.getRHR()){
