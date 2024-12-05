@@ -167,7 +167,8 @@ void sleepMetrics(int light, int deep, int REM, double HRV){
   double standardizedDeep = 100 - 2*(abs(deep*100 - 25));
   double standardizedREM = 100 - 2*(abs(REM*100 - 25));
   double standardizedDuration = 100 - 15 *(abs(sleepDuration - testUser.getSleepTarget()));
-  double sleepScore = 0.3*standardizedHRV + 0.2*standardizedLight + 0.2*standardizedDeep + 0.2*standardizedREM + 0.1*standardizedDuration;
+  double sleepScore = 0.3*standardizedHRV + 0.2*standardizedLight + 
+    0.2*standardizedDeep + 0.2*standardizedREM + 0.1*standardizedDuration;
 
   Serial.print("Sleep Performance Score: ");
   Serial.println(sleepScore);
