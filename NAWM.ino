@@ -194,7 +194,7 @@ void sleepMetrics(int light, int deep, int REM, double HRV, int soundCount, int 
     Serial.println("You are getting sufficient sleep. Try to hit 100% of your sleep needs for peak performance.");
   }
 
-//Turn on the light according to the sleepscore
+//Turn on the LEDs according to the sleepscore
   int lightNum = sleepScore/10;
 
   for(int i = 0; i < lightNum;i++){
