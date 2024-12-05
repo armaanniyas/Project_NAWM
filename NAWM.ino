@@ -159,8 +159,8 @@ void sleepMetrics(int light, int deep, int REM, double HRV){
   if(HRV >= 60){
     Serial.println("Your HRV is above the baseline. Great work. This indicates better fitness and overall health.");
   }else if(HRV < 35){
-    Serial.println("Your HRV is low. This may be a sign of overtraining, lack of sleep, dehydration or stress. Ensure you are getting good sleep, drinking fluids and avoid burnouts. 
-      If you need support, speak to a friend.");
+    Serial.println("Your HRV is low. This may be a sign of overtraining, lack of sleep, dehydration or stress. 
+      Ensure you are getting good sleep, drinking fluids and avoid burnouts. If you need support, speak to a friend.");
   }
   double standardizedHRV = (HRV - 15) / (100 - 15) *100;
   double standardizedLight = 100 - abs(light*100 - 50);
