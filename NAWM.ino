@@ -273,7 +273,8 @@ void loop() {
         double HRV = calculateHRV(sum, lightSleepCount + deepSleepCount + REMSleepCount);
         aboveRHR = 0;
 
-        sleepMetrics(lightSleepCount, deepSleepCount, REMSleepCount, HRV, soundCount, lightCount, lowTempCount, highTempCount);
+        //temporarily commented out sleepMetrics() - remove when finished
+        //sleepMetrics(lightSleepCount, deepSleepCount, REMSleepCount, HRV, soundCount, lightCount, lowTempCount, highTempCount);
       }
     }else{
       if (bpm < testUser.getRHR()){
