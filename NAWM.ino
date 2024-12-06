@@ -138,7 +138,8 @@ double calculateHRV(int sum, int count){
   return sqrt(sum / (count-1));
     }
 
-void sleepMetrics(int light, int deep, int REM, double HRV, int soundCount, int lightCount, int lowTempCount, int highTempCount){
+/*  for test only 
+  void sleepMetrics(int light, int deep, int REM, double HRV, int soundCount, int lightCount, int lowTempCount, int highTempCount){
   double sleepDuration = (light + deep + REM) / (60*60);
   Serial.print("Good morning ");
   Serial.print(testUser.getName());
@@ -216,7 +217,7 @@ void sleepMetrics(int light, int deep, int REM, double HRV, int soundCount, int 
     Serial.println("Your sleeping environment is too hot!");
   }
 }
-
+*/
 void setup() {
   Serial.begin(9600);
   CircuitPlayground.begin();
