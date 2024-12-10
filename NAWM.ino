@@ -212,16 +212,16 @@ void sleepMetrics(int light, int deep, int REM, double HRV, int soundCount, int 
 
   Serial.println("----------------");
   Serial.println("Environmental analysis:");
-  if(soundCount > THRESHHOLD_COUNT){
+  if(soundCount > THRESHOLD_COUNT){
     Serial.println("Your sleeping environment is too loud!");
   }
-  if(lightCount > THRESHHOLD_COUNT){
+  if(lightCount > THRESHOLD_COUNT){
     Serial.println("Your sleeping environment is too bright!");
   }
-  if(lowTempCount > THRESHHOLD_COUNT){
+  if(lowTempCount > THRESHOLD_COUNT){
     Serial.println("Your sleeping environment is too cold!");
   }
-  if(highTempCount > THRESHHOLD_COUNT){
+  if(highTempCount > THRESHOLD_COUNT){
     Serial.println("Your sleeping environment is too hot!");
   }
 }
