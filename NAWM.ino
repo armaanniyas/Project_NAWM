@@ -1,6 +1,14 @@
 #include <Adafruit_CircuitPlayground.h>
 #include <PulseSensorPlayground.h>
+
 #define LATENCY 5
+#define MVT_CHANGE 8.0
+#define TEMP_LOW 18.0
+#define TEMP_HIGH 25.0
+#define SOUND_HIGH 60.0
+#define LIGHT_HIGH 10.0
+#define THRESHOLD_COUNT 10
+
 
 PulseSensorPlayground pulseSensor;
 // Intialise variables
@@ -98,7 +106,7 @@ bool movement(double x, double y, double z) {
 
     totalChange = sqrt(pow(xchange, 2) + pow(ychange, 2) + pow(zchange, 2));
 
-    if((totalChange > 8) && (prevTotalChange > 8)){
+    if((totalChange > MVT_CHANGE) && (prevTotalChange > MVT_CHANGE)){
       movementCount = movementCount + 1;
       if(movementCount == 1){
         movementCount = 0;
@@ -119,27 +127,27 @@ bool movement(double x, double y, double z) {
 }
 
 bool soundCheck(){
-  CircuitPlayground.mic.soundPressureLevel(10) > 60.0 ? true : false;
+  CircuitPlayground.mic.soundPressureLevel(10) > SOUND_LOW ? true : false;
 }
 
 bool lightCheck(){
-  CircuitPlayground.lightSensor() > 10.0 ? true : false;
+  CircuitPlayground.lightSensor() > LIGHT_LOW ? true : false;
 }
 
 bool lowTempCheck(){
-  CircuitPlayground.temperature() < 18.0 ? true : false;
+  CircuitPlayground.temperature() < TEMP_LOW ? true : false;
 }
 
 bool highTempCheck(){
-  CircuitPlayground.temperature() > 25.0 ? true : false;
+  CircuitPlayground.temperature() > TEMP_HIGH ? true : false;
 }
 
 double calculateHRV(int sum, int count){
   return sqrt(sum / (count-1));
     }
+ 
 
-/*  for test only 
-  void sleepMetrics(int light, int deep, int REM, double HRV, int soundCount, int lightCount, int lowTempCount, int highTempCount){
+void sleepMetrics(int light, int deep, int REM, double HRV, int soundCount, int lightCount, int lowTempCount, int highTempCount){
   double sleepDuration = (light + deep + REM) / (60*60);
   Serial.print("Good morning ");
   Serial.print(testUser.getName());
@@ -204,20 +212,20 @@ double calculateHRV(int sum, int count){
 
   Serial.println("----------------");
   Serial.println("Environmental analysis:");
-  if(soundCount > 10){
+  if(soundCount > THRESHHOLD_COUNT){
     Serial.println("Your sleeping environment is too loud!");
   }
-  if(lightCount > 10){
+  if(lightCount > THRESHHOLD_COUNT){
     Serial.println("Your sleeping environment is too bright!");
   }
-  if(lowTempCount > 10){
+  if(lowTempCount > THRESHHOLD_COUNT){
     Serial.println("Your sleeping environment is too cold!");
   }
-  if(highTempCount > 10){
+  if(highTempCount > THRESHHOLD_COUNT){
     Serial.println("Your sleeping environment is too hot!");
   }
 }
-*/
+
 void setup() {
   Serial.begin(9600);
   CircuitPlayground.begin();
